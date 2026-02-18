@@ -1,3 +1,54 @@
+"""
+====================================================================================================
+DAG: customer_scd2_pipeline_dag.py
+====================================================================================================
+DAG Purpose:
+    This Airflow DAG orchestrates the complete SCD Type 2 customer data pipeline.
+    It automates the end-to-end ETL workflow from raw data generation to loading
+    historical records into the dimension table.
+
+Pipeline Workflow:
+    1. Generate raw customer data
+        - Executes generate_customer_raw_data.py
+        - Creates simulated customer source data
+
+    2. Clean customer data
+        - Executes clean_customer_data.py
+        - Performs data cleansing and prepares structured data
+
+    3. Load data into staging table
+        - Executes load_to_staging.py
+        - Loads cleaned data into staging_customer table
+
+    4. Apply SCD Type 2 logic
+        - Executes scd2_customer_load.sql
+        - Inserts new records
+        - Expires changed records
+        - Maintains full customer history
+
+Key Features:
+    - Fully automated ETL pipeline using Apache Airflow
+    - Implements Slowly Changing Dimension Type 2
+    - Maintains historical customer data
+    - Ensures data consistency and traceability
+
+Dependencies:
+    generate_customer_raw_data.py
+    clean_customer_data.py
+    load_to_staging.py
+    scd2_customer_load.sql
+
+Usage:
+    - Place this DAG in the Airflow dags folder
+    - Start Airflow scheduler and webserver
+    - Trigger DAG manually or schedule as required
+
+Owner:
+    Data Engineering Project
+
+====================================================================================================
+"""
+
 import os
 from datetime import timedelta
 from airflow import DAG
