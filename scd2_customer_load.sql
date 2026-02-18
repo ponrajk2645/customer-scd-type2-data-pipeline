@@ -23,6 +23,10 @@ Target:
 Usage:
     - Run this script after load_to_staging.py
     - Ensures dimension table maintains accurate historical customer records
+
+Author        : Ponraj K
+Project       : Customer Data Pipeline using SCD Type 2 with Apache Airflow
+Created Date  : 2026
 ====================================================================================================
 */
 
