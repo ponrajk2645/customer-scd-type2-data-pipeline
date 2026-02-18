@@ -1,3 +1,28 @@
+/*
+====================================================================================================
+Script Name: create_dim_customer_scd2.sql
+====================================================================================================
+Script Purpose:
+    Creates the dimension table to store customer data using Slowly Changing Dimension Type 2 (SCD2).
+
+Description:
+    - Stores complete historical customer records
+    - Tracks changes using effective_start_date and effective_end_date
+    - Uses is_current flag to identify active record
+    - Uses surrogate_key as primary key for uniqueness
+
+Source:
+    stg_customer (Staging Table)
+
+Target:
+    dim_customer_scd2 (Dimension Table)
+
+Execution:
+    Executed once during initial database setup or schema initialization.
+
+====================================================================================================
+*/
+
 CREATE TABLE IF NOT EXISTS dim_customer_scd2 (
     surrogate_key BIGINT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
@@ -20,3 +45,4 @@ CREATE TABLE IF NOT EXISTS dim_customer_scd2 (
     INDEX idx_customer_id (customer_id),
     INDEX idx_current_flag (is_current)
 );
+
