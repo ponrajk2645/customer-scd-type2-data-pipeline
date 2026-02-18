@@ -43,9 +43,9 @@ Usage:
     - Start Airflow scheduler and webserver
     - Trigger DAG manually or schedule as required
 
-Owner:
-    Data Engineering Project
-
+Author        : Ponraj K
+Project       : Customer Data Pipeline using SCD Type 2 with Apache Airflow
+Created Date  : 2026
 ====================================================================================================
 """
 
