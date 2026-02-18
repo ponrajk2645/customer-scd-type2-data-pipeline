@@ -233,7 +233,7 @@ Pipeline runs automatically based on schedule.
 Step 1: Clone repository
 
 ```
-git clone https://github.com/yourusername/customer-scd-type2-data-pipeline.git
+git clone https://github.com/ponrajk2645/customer-scd-type2-data-pipeline.git
 ```
 
 Step 2: Create virtual environment
