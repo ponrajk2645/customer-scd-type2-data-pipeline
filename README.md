@@ -1,120 +1,133 @@
-# Customer SCD Type 2 Data Pipeline using Airflow and MySQL
+# 🚀 Customer SCD Type 2 Data Pipeline using Airflow and MySQL
 
-## Overview
+## 📌 Overview
 
-This project implements an end-to-end automated data pipeline to track customer data history using Slowly Changing Dimension Type 2 (SCD Type 2). The pipeline generates monthly customer data, cleans and processes it, loads it into a MySQL data warehouse, and maintains historical records using SCD Type 2 logic.
+This project implements an automated end-to-end ETL data pipeline to track customer data history using Slowly Changing Dimension Type 2 (SCD Type 2).
 
-Apache Airflow is used to orchestrate and automate the entire ETL pipeline.
+The pipeline generates customer data, cleans it, loads it into MySQL staging tables, and applies SCD Type 2 logic to maintain full historical records.
+
+Apache Airflow is used to orchestrate and automate the entire workflow.
 
 ---
 
-## Problem Statement
+## ❓ Problem Statement
 
-In real-world business systems, customer data changes over time (plan changes, subscription status updates, billing cycle modifications, etc.). A simple update overwrites the old data and loses historical information.
+Customer data changes frequently in real-world systems, such as:
 
-Businesses need to preserve full history to support:
+* Subscription plan changes
+* Billing cycle updates
+* Subscription status updates
 
-* Historical reporting
-* Customer behavior analysis
+If data is updated normally, old records are overwritten and history is lost.
+
+Businesses need historical data for:
+
+* Analytics and reporting
+* Customer behavior tracking
 * Audit requirements
-* Business intelligence and analytics
+* Business intelligence
 
-This project solves that problem using SCD Type 2 methodology.
+This project solves this problem using SCD Type 2 methodology.
 
 ---
 
-## Project Objective
+## 🎯 Project Objective
 
-The main objectives of this project are:
+The objectives of this project are:
 
-* Generate monthly customer data automatically
+* Generate customer data automatically
 * Clean and standardize raw data
-* Load data into staging tables
+* Load data into MySQL staging table
 * Apply SCD Type 2 logic
-* Maintain full customer history
-* Automate pipeline execution using Airflow
-* Build a production-style ETL pipeline
+* Maintain full historical records
+* Automate pipeline using Airflow
+* Build production-style ETL pipeline
 
 ---
 
-## Architecture
-
-Pipeline Architecture:
-
-Raw Data Generation (Python)
-↓
-Raw CSV Files
-↓
-Data Cleaning (Python)
-↓
-Cleaned CSV Files
-↓
-Staging Table Load (MySQL)
-↓
-SCD Type 2 Logic Applied
-↓
-Dimension Table (dim_customer_scd2)
-↓
-Airflow Automation
-
----
-
-## Data Flow
-
-Step 1: Generate raw customer data using Python and Faker
-Step 2: Save raw data as CSV files
-Step 3: Clean and standardize data using Pandas
-Step 4: Load cleaned data into MySQL staging table
-Step 5: Apply SCD Type 2 logic
-Step 6: Insert new records and expire old records
-Step 7: Store final data in dimension table
-Step 8: Airflow automates entire pipeline
-
----
-
-## Tech Stack
-
-Python – Data generation and cleaning
-Pandas – Data processing
-MySQL – Data warehouse
-Apache Airflow – Workflow orchestration
-Linux – Execution environment
-Faker – Test data generation
-
----
-
-## Project Structure
+## 🏗️ Architecture
 
 ```
-customer-scd-type2-data-pipeline/
+Python Data Generator
+        ↓
+Raw CSV Files (scd_type2_rawdata)
+        ↓
+Data Cleaning Script
+        ↓
+Cleaned CSV Files (scd_type2_cleaned)
+        ↓
+MySQL Staging Table (stg_customer)
+        ↓
+SCD Type 2 Logic
+        ↓
+Dimension Table (dim_customer_scd2)
+        ↓
+Airflow DAG Automation
+```
+
+---
+
+## 🔄 Data Flow
+
+Step 1: Generate raw customer data using Python
+Step 2: Store raw data in scd_type2_rawdata folder
+Step 3: Clean and standardize data using Pandas
+Step 4: Store cleaned data in scd_type2_cleaned folder
+Step 5: Copy cleaned data into mysql_load_files folder
+Step 6: Load data into MySQL staging table
+Step 7: Apply SCD Type 2 logic using SQL
+Step 8: Store historical records in dimension table
+Step 9: Airflow automates entire pipeline
+
+---
+
+## 🛠️ Tech Stack
+
+* Python
+* Pandas
+* MySQL
+* Apache Airflow
+* Linux
+* Faker
+
+---
+
+## 📁 Project Structure (Actual)
+
+```
+airflow_project/
 
 │
 ├── dags/
-│   └── customer_scd2_pipeline_dag.py
+│   └── scd_type2_pipeline.py
+│
+├── airflow_home/
+│   └── dags/
+│       ├── create_stg_customer.sql
+│       ├── create_dim_customer_scd2.sql
+│       └── scd_type2_load.sql
 │
 ├── python_scripts/
-│   ├── generate_customer_raw_data.py
-│   ├── clean_customer_data.py
-│   ├── load_customer_staging.py
-│
-├── mysql_scripts/
-│   ├── create_staging_customer.sql
-│   ├── create_dim_customer_scd2.sql
-│   ├── scd2_customer_load.sql
+│   ├── generate_raw_customers.py
+│   ├── clean_customers_data.py
+│   └── load_to_mysql.py
 │
 ├── scd_type2_rawdata/
-├── scd_type2_cleaned/
-├── mysql_load_files/
 │
-├── requirements.txt
+├── scd_type2_cleaned/
+│
+├── venv/
+│
 └── README.md
 ```
 
 ---
 
-## Database Schema
+## 🗄️ Database Schema
 
 ### Staging Table: stg_customer
+
+Columns:
 
 * customer_id
 * first_name
@@ -131,7 +144,9 @@ customer-scd-type2-data-pipeline/
 
 ### Dimension Table: dim_customer_scd2
 
-* customer_sk (Surrogate Key)
+Columns:
+
+* customer_sk
 * customer_id
 * first_name
 * last_name
@@ -147,81 +162,73 @@ customer-scd-type2-data-pipeline/
 
 ---
 
-## SCD Type 2 Logic Explanation
+## 🧠 SCD Type 2 Logic
 
 When customer data changes:
 
-1. Existing record is expired
+Expire old record:
 
-   * end_date is updated
-   * is_current is set to 0
+```
+end_date = current_date
+is_current = 0
+```
 
-2. New record is inserted
+Insert new record:
 
-   * effective_date is current date
-   * end_date is NULL
-   * is_current is set to 1
+```
+effective_date = current_date
+end_date = NULL
+is_current = 1
+```
 
-This preserves full history of customer changes.
+This maintains full historical data.
 
 ---
 
-## Airflow Pipeline
+## ⚙️ Airflow Pipeline Tasks
 
-The Airflow DAG performs the following tasks:
+The Airflow DAG performs:
 
-1. Generate raw data
-2. Clean data
+1. Generate raw data (Python)
+2. Clean data (Python)
 3. Copy cleaned data
-4. Load staging table
-5. Apply SCD Type 2 logic
+4. Load staging table (MySQL)
+5. Apply SCD Type 2 logic (SQL)
 
-Pipeline runs automatically on schedule.
+Pipeline runs automatically based on schedule.
 
 ---
 
-## Key Features
+## ✨ Key Features
 
-* Fully automated ETL pipeline
+* Automated ETL pipeline
 * SCD Type 2 implementation
-* Historical data tracking
-* Modular ETL design
-* Automated workflow using Airflow
-* Production-style architecture
-* Incremental data loading
+* Full history tracking
+* Airflow automation
+* Incremental loading
+* Modular pipeline design
 
 ---
 
-## Performance Optimization
+## ⚡ Performance Optimization
 
-* Incremental data loading
-* Staging table used for efficient processing
-* Modular scripts improve maintainability
-* Airflow automation eliminates manual work
+* Incremental processing
+* Staging table usage
+* Automated scheduling
+* Efficient SQL logic
 
 ---
 
-## Challenges Faced
+## 🧩 Challenges Faced
 
-* Implementing correct SCD Type 2 logic
-* Automating pipeline execution
-* Handling incremental monthly data
+* Implementing SCD Type 2 logic correctly
+* Automating Airflow pipeline
+* Managing incremental loads
 * Preventing duplicate records
-* Managing Airflow scheduling
 
 ---
 
-## Future Improvements
-
-* Integrate AWS S3 for storage
-* Use Snowflake or BigQuery as warehouse
-* Add real-time pipeline using Kafka
-* Add monitoring and alert system
-* Add data quality validation checks
-
----
-
-## How to Run the Project
+## ▶️ How to Run
 
 Step 1: Clone repository
 
@@ -239,7 +246,7 @@ source venv/bin/activate
 Step 3: Install dependencies
 
 ```
-pip install -r requirements.txt
+pip install pandas faker mysql-connector-python apache-airflow
 ```
 
 Step 4: Start Airflow
@@ -248,38 +255,34 @@ Step 4: Start Airflow
 airflow standalone
 ```
 
-Step 5: Enable DAG from Airflow UI
+Step 5: Enable DAG in Airflow UI
 
 ---
 
-## Sample Output
+## 📊 Sample Output
 
-Dimension table stores full customer history with active and expired records.
+Example dimension table:
 
-Example:
-
-customer_id | plan | effective_date | end_date | is_current
-101 | Basic | 2024-01-01 | 2024-03-01 | 0
-101 | Pro | 2024-03-01 | NULL | 1
+| customer_id | plan  | effective_date | end_date   | is_current |
+| ----------- | ----- | -------------- | ---------- | ---------- |
+| 101         | Basic | 2024-01-01     | 2024-03-01 | 0          |
+| 101         | Pro   | 2024-03-01     | NULL       | 1          |
 
 ---
 
-## Conclusion
-
-This project demonstrates a real-world data engineering pipeline using Airflow, Python, and MySQL. It implements SCD Type 2 to maintain full historical data and follows industry-standard ETL architecture.
-
-This project showcases skills in:
+## 🎓 Skills Demonstrated
 
 * ETL pipeline development
 * Data warehousing
-* Workflow orchestration
+* SCD Type 2 implementation
+* Airflow orchestration
 * Python data processing
-* SQL and database design
-* Airflow automation
+* SQL and MySQL
+* Production-style pipeline design
 
 ---
 
-## Author
+## 👨‍💻 Author
 
 Ponraj K
 Data Engineering Project
