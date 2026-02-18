@@ -1,3 +1,56 @@
+"""
+=================================================================================================================
+Script Name   : clean_customer_data.py
+Layer         : Data Cleaning Layer
+Object Type   : Python Script
+Purpose       : Clean and transform raw customer data before loading into the staging table
+
+Description:
+    This script reads raw customer data from the raw data directory, performs data cleaning,
+    validation, and transformation, and writes the cleaned data into the cleaned data directory.
+
+    The purpose of this script is to ensure only high-quality, standardized, and valid data
+    is loaded into the staging table for further processing in the SCD Type 2 pipeline.
+
+Data Cleaning Operations Performed:
+    - Remove duplicate records
+    - Handle missing or NULL values
+    - Standardize text fields (trim spaces, normalize case)
+    - Validate email and phone number formats
+    - Ensure correct data types for each column
+    - Remove invalid or corrupted records
+
+Source:
+    Raw customer data file
+    Example: scd_type2_rawdata/customers_raw.csv
+
+Target:
+    Cleaned customer data file
+    Example: scd_type2_cleandata/customers_cleaned.csv
+
+Pipeline Role:
+    Raw Data → [This Script: Cleaning] → Cleaned Data → Staging Table → Dimension Table (SCD Type 2)
+
+Benefits:
+    - Improves data quality
+    - Prevents invalid data from entering the data warehouse
+    - Ensures reliable historical tracking
+    - Improves downstream analytics accuracy
+
+Usage Example:
+    python clean_customer_data.py
+
+Dependencies:
+    - pandas
+    - os
+    - datetime (if used)
+
+Author        : Ponraj K
+Project       : Customer Data Pipeline using SCD Type 2 with Apache Airflow
+Created Date  : 2026
+=================================================================================================================
+"""
+
 import pandas as pd
 import os
 
