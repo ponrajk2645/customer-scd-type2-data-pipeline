@@ -1,3 +1,76 @@
+"""
+=================================================================================================================
+Script Name   : generate_customer_raw_data.py
+Layer         : Data Generation Layer (Raw Data Layer)
+Object Type   : Python Script
+Purpose       : Generate synthetic raw customer data for testing the SCD Type 2 pipeline
+
+Description:
+    This script generates sample customer data and saves it as a CSV file in the raw data directory.
+    The generated data simulates real-world customer information such as subscriptions, plans,
+    billing cycles, and status changes.
+
+    This raw data acts as the source input for the ETL pipeline and is used to test historical
+    tracking using the Slowly Changing Dimension (SCD Type 2) logic.
+
+Data Generated Includes:
+    - customer_id
+    - first_name
+    - last_name
+    - email
+    - phone_number
+    - email_verified
+    - city
+    - plan
+    - billing_cycle
+    - subscription_status
+    - event_date
+    - source_system
+
+Features:
+    - Generates realistic customer records
+    - Simulates customer changes over time
+    - Helps test SCD Type 2 history tracking
+    - Supports pipeline testing and development without real production data
+
+Source:
+    Synthetic data generated using Python libraries (random, faker, pandas)
+
+Target:
+    Raw data file saved to:
+    Example: scd_type2_rawdata/customers_raw.csv
+
+Pipeline Role:
+    [This Script: Generate Data] → Raw Data → Clean Data → Staging Table → Dimension Table (SCD Type 2)
+
+Benefits:
+    - Enables full pipeline testing
+    - Simulates real-world customer lifecycle changes
+    - Helps validate SCD Type 2 logic implementation
+    - Eliminates dependency on external production data sources
+
+Usage Example:
+    python generate_customer_raw_data.py
+
+Dependencies:
+    - pandas
+    - random
+    - faker
+    - datetime
+    - os
+
+Output Example:
+    customer_id | first_name | city    | plan  | billing_cycle | subscription_status | event_date
+    --------------------------------------------------------------------------------------------
+    101         | Ravi       | Chennai | Pro   | Monthly       | Active              | 2024-01-01
+    101         | Ravi       | Chennai | Pro   | Yearly        | Active              | 2024-04-01
+
+Author        : Ponraj K
+Project       : Customer Data Pipeline using SCD Type 2 with Apache Airflow
+Created Date  : 2026
+=================================================================================================================
+"""
+
 import os
 import pandas as pd
 import random
