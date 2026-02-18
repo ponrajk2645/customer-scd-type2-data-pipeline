@@ -15,6 +15,10 @@ Script Purpose:
 Usage:
     - Run this script after clean_customer_data.py
     - Ensures staging table contains the latest cleaned customer data
+
+Author        : Ponraj K
+Project       : Customer Data Pipeline using SCD Type 2 with Apache Airflow
+Created Date  : 2026
 ====================================================================================================
 """
 
