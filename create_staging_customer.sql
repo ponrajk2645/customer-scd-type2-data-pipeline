@@ -1,3 +1,25 @@
+/*
+====================================================================================================
+Script Name: create_staging_customer.sql
+====================================================================================================
+Script Purpose:
+    Creates the staging table for customer data if it does not exist.
+
+Description:
+    - Stores raw customer data before applying SCD Type 2 logic
+    - Acts as an intermediate layer between source and dimension table
+
+Source:
+    CSV file / Source system
+
+Target:
+    stg_customer table
+
+Execution:
+    Executed as part of the ETL pipeline.
+====================================================================================================
+*/
+
 CREATE TABLE IF NOT EXISTS stg_customer (
     customer_id INT NOT NULL,
     first_name VARCHAR(100),
