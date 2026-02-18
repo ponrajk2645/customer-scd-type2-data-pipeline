@@ -355,6 +355,26 @@ This returns only the latest active customer records.
 
 ---
 
+## Airflow DAG Pipeline
+
+This DAG automates the full SCD Type 2 pipeline:
+
+- Generate raw data
+- Clean data
+- Load staging table
+- Apply SCD Type 2 logic
+
+### DAG Graph
+
+![Customer SCD2 Pipeline](images/dag_graph.png)
+---
+
+## Architecture Diagram
+
+This diagram shows the complete SCD Type 2 pipeline architecture.
+![SCD2 Architecture](images/scd2_architecture.png)
+---
+
 ## 👨‍💻 Author
 
 Ponraj K
