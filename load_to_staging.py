@@ -1,3 +1,23 @@
+"""
+====================================================================================================
+Script: load_to_staging.py
+====================================================================================================
+Script Purpose:
+    This script loads cleaned customer data from the Silver layer into the Staging tables
+    in the data warehouse.
+
+    It reads the cleaned CSV file and inserts the records into the staging table without
+    applying any business transformations.
+
+    The staging table acts as a temporary storage area before loading data into the
+    final Dimension tables (SCD Type 2).
+
+Usage:
+    - Run this script after clean_customer_data.py
+    - Ensures staging table contains the latest cleaned customer data
+====================================================================================================
+"""
+
 import pandas as pd
 import pymysql
 import os
