@@ -259,14 +259,87 @@ Step 5: Enable DAG in Airflow UI
 
 ---
 
-## 📊 Sample Output
+## 📊 Sample Output (SCD Type 2 History Tracking)
 
-Example dimension table:
+### Customers with Multiple Records
 
-| customer_id | plan  | effective_date | end_date   | is_current |
-| ----------- | ----- | -------------- | ---------- | ---------- |
-| 101         | Basic | 2024-01-01     | 2024-03-01 | 0          |
-| 101         | Pro   | 2024-03-01     | NULL       | 1          |
+Query:
+
+```
+SELECT customer_id, COUNT(*) AS record_count
+FROM dim_customer_scd2
+GROUP BY customer_id
+HAVING COUNT(*) > 1
+LIMIT 10;
+```
+
+Result:
+
+| customer_id | record_count |
+| ----------- | ------------ |
+| 3           | 2            |
+| 6           | 2            |
+| 7           | 2            |
+| 9           | 2            |
+| 13          | 2            |
+| 15          | 2            |
+| 18          | 2            |
+| 19          | 2            |
+| 20          | 2            |
+| 27          | 3            |
+
+This confirms multiple historical records are stored correctly.
+
+---
+
+### Customer History Example
+
+Query:
+
+```
+SELECT *
+FROM dim_customer_scd2
+WHERE customer_id IN (3,6,7,9);
+```
+
+Result:
+
+| surrogate_key | customer_id | plan  | billing_cycle | subscription_status | effective_start_date | effective_end_date | is_current |
+| ------------- | ----------- | ----- | ------------- | ------------------- | -------------------- | ------------------ | ---------- |
+| 3             | 3           | Pro   | Monthly       | Cancelled           | 2024-01-01           | 2024-03-31         | 0          |
+| 1214          | 3           | Pro   | Yearly        | Active              | 2024-04-01           | 9999-12-31         | 1          |
+| 6             | 6           | Basic | Monthly       | Cancelled           | 2024-01-01           | 2024-04-30         | 0          |
+| 1277          | 6           | Pro   | Monthly       | Cancelled           | 2024-05-01           | 9999-12-31         | 1          |
+| 7             | 7           | Pro   | Monthly       | Active              | 2024-01-01           | 2024-03-31         | 0          |
+| 1215          | 7           | Pro   | Yearly        | Cancelled           | 2024-04-01           | 9999-12-31         | 1          |
+| 9             | 9           | Pro   | Monthly       | Cancelled           | 2024-01-01           | 2024-04-30         | 0          |
+| 1278          | 9           | Basic | Yearly        | Cancelled           | 2024-05-01           | 9999-12-31         | 1          |
+
+---
+
+### Explanation
+
+| Column               | Meaning                                   |
+| -------------------- | ----------------------------------------- |
+| surrogate_key        | Unique row identifier                     |
+| customer_id          | Business key                              |
+| effective_start_date | Record start date                         |
+| effective_end_date   | Record end date                           |
+| is_current           | 1 = current record, 0 = historical record |
+
+---
+
+### Key Validation Query
+
+To get only current customers:
+
+```
+SELECT *
+FROM dim_customer_scd2
+WHERE is_current = 1;
+```
+
+This returns only the latest active customer records.
 
 ---
 
