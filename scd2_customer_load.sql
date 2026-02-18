@@ -1,3 +1,31 @@
+/*
+====================================================================================================
+Script: scd2_customer_load.sql
+====================================================================================================
+Script Purpose:
+    This script implements the Slowly Changing Dimension Type 2 (SCD Type 2) logic
+    to load customer data from the staging table into the dimension table dim_customer_scd2.
+
+    It ensures historical tracking of customer changes by:
+        - Inserting new customer records
+        - Expiring existing records when changes are detected
+        - Creating new records with updated information
+        - Maintaining effective_date, end_date, and active_flag columns
+
+    This allows full history tracking of customer attribute changes over time.
+
+Source:
+    staging_customer
+
+Target:
+    dim_customer_scd2
+
+Usage:
+    - Run this script after load_to_staging.py
+    - Ensures dimension table maintains accurate historical customer records
+====================================================================================================
+*/
+
 START TRANSACTION;
 
 -- -----------------------------------------------------
